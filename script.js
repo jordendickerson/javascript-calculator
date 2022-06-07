@@ -67,3 +67,15 @@ equalsButton.addEventListener('click', () => {
     operator = '';
 });
 
+//CLEAR FUNCTION
+clearButton.addEventListener('click', () => {
+    if (operator == undefined){
+        operand1 = '';
+        outputBox.textContent = '0';
+        displayText = '';
+    }else {
+        operand2 = '';
+        outputBox.textContent = '0';
+        displayText = '';
+    }
+});
