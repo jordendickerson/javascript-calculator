@@ -2,6 +2,7 @@ const numberButtons = document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
 const outputBox = document.querySelector('#output');
 const equalsButton = document.getElementById('=');
+const clearButton = document.getElementById('CLR');
 
 let displayText = '';
 let operand1 = 0;
@@ -27,17 +28,17 @@ function divide(x,y) {
 
 function operate(operand1, operand2, operator){
     if (operator === '+'){
-        return add(operand1, operand2);
+        return add(parseInt(operand1), parseInt(operand2));
     }else if (operator === '-'){
-        return subtract(operand1, operand2);
+        return subtract(parseInt(operand1), parseInt(operand2));
     }else if (operator === 'x'){
-        return multiply(operand1, operand2);
+        return multiply(parseInt(operand1), parseInt(operand2));
     }else if (operator === '/'){
-        return divide(operand1, operand2);
+        return divide(parseInt(operand1), parseInt(operand2));
     }
 }
 
-//add event listeners to number buttons
+//NUMBER BUTTONS
 numberButtons.forEach(button => button.addEventListener('click', () => {
     if (displayText.length < 12){
         // change the display text to the id of the button and display it on the output
@@ -49,9 +50,20 @@ numberButtons.forEach(button => button.addEventListener('click', () => {
     
 }));
 
-//add event listeners to operators
+//OPERATORS
 operatorButtons.forEach(button => button.addEventListener('click', () => {
     //change operand1 to an int and set the operator
     operand1 = parseInt(displayText);
     operator = button.id;
+    displayText = '';
+    outputBox.textContent = displayText;
 }));
+
+//EQUALS FUNCTION
+equalsButton.addEventListener('click', () => {
+    operand2 = displayText;
+    let result = operate(operand1, operand2, operator);
+    outputBox.textContent = result;
+    operator = '';
+});
+
