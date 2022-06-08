@@ -1,10 +1,12 @@
 let resetNextInput = false;
+let equalsPressed = false;
 
 const numberButtons = document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
 const outputBox = document.querySelector('#output');
 const equalsButton = document.getElementById('=');
 const clearButton = document.getElementById('CLR');
+const decimalButton = document.getElementById('.');
 const debugDiv = document.querySelector('.debug-div');
 
 let displayText = '';
@@ -31,28 +33,44 @@ function divide(x,y) {
 
 function operate(operand1, operand2, operator){
     if (operator === '+'){
-        return add(Number(operand1), Number(operand2));
+        return Math.round(add(Number(operand1), Number(operand2)) * 100) / 100;
     }else if (operator === '-'){
-        return subtract(Number(operand1), Number(operand2));
+        return Math.round(subtract(Number(operand1), Number(operand2)) * 100) / 100;
     }else if (operator === 'x'){
-        return multiply(Number(operand1), Number(operand2));
+        return Math.round(multiply(Number(operand1), Number(operand2)) * 100) / 100;
     }else if (operator === '/'){
-        return divide(Number(operand1), Number(operand2));
+        if (operand2 == 0){
+            alert("YOU CANNOT DIVIDE BY 0!\nYOUR OPERATION WILL NOW BE CLEARED!");
+            clear();
+            return
+        }else{
+            return Math.round(divide(Number(operand1), Number(operand2)) * 100) / 100;
+        }
     }else{
         return null;
     }
 }
 
 function evaluate (){
-    operand2 = parseInt(displayText);
+    operand2 = Number(displayText);
     let result = operate(operand1, operand2, operator);
     outputBox.textContent = result;
     operand1 = result;
 }
 
+function clear(){
+    operand1 = undefined;
+    operand2 = undefined;
+    operator = undefined;
+    displayText = '';
+    outputBox.textContent = '';
+}
 
-//NUMBER BUTTONS
-numberButtons.forEach(button => button.addEventListener('click', () => {
+function addDigit(button) {
+    //clear if equals has been pressed
+    if (equalsPressed){
+        clear();
+    }
     if (displayText.length < 12){
         if (resetNextInput){
             displayText = '';
@@ -64,11 +82,21 @@ numberButtons.forEach(button => button.addEventListener('click', () => {
     }else{
         return;
     }
-    
+}
+
+
+//NUMBER BUTTONS
+numberButtons.forEach(button => button.addEventListener('click', () => {
+    addDigit(button); 
+    console.log(typeof(button.id));
 }));
 
 //OPERATORS
 operatorButtons.forEach(button => button.addEventListener('click', () => {
+    // clear if equals has been pressed
+    if (equalsPressed){
+        clear();
+    }
     //if operand1 and operator are defined, operate and place in operand1
     if (operand1 !== undefined && operator !== undefined){
         let result = operate(operand1, Number(outputBox.textContent), operator);
@@ -84,22 +112,27 @@ operatorButtons.forEach(button => button.addEventListener('click', () => {
 //EQUALS FUNCTION
 equalsButton.addEventListener('click', () => {
     if (operand1 === undefined){
-        operand1 = outputBox.textContent;
+        operand1 = Number(outputBox.textContent);
     }else if (operator !== undefined){
-        operand2 = outputBox.textContent;
+        operand2 = Number(outputBox.textContent);
     }
     if (operand1 !== undefined && operand2 !== undefined){
         evaluate();
     }
+    equalsPressed = true;
 });
 
 //CLEAR FUNCTION
 clearButton.addEventListener('click', () => {
-    operand1 = undefined;
-    operand2 = undefined;
-    operator = undefined;
-    displayText = '';
-    outputBox.textContent = '';
+    clear();
+});
+
+//DECIMAL BUTTON
+decimalButton.addEventListener('click', () => {
+    hasDecimal = (outputBox.textContent).includes(".");
+    if (!hasDecimal){
+        addDigit(decimalButton);
+    }
 });
 
 function updateDebugger (){
