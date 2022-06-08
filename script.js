@@ -69,10 +69,15 @@ numberButtons.forEach(button => button.addEventListener('click', () => {
 
 //OPERATORS
 operatorButtons.forEach(button => button.addEventListener('click', () => {
+    //if operand1 and operator are defined, operate and place in operand1
+    if (operand1 !== undefined && operator !== undefined){
+        let result = operate(operand1, Number(outputBox.textContent), operator);
+        outputBox.textContent = result;
+    }
     //set operator
     operator = button.id;
     //change operand1 to an int
-    operand1 = parseInt(outputBox.textContent);
+    operand1 = Number(outputBox.textContent);
     resetNextInput = true;
 }));
 
