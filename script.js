@@ -1,12 +1,15 @@
+let resetNextInput = false;
+
 const numberButtons = document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
 const outputBox = document.querySelector('#output');
 const equalsButton = document.getElementById('=');
 const clearButton = document.getElementById('CLR');
+const debugDiv = document.querySelector('.debug-div');
 
 let displayText = '';
-let operand1 = 0;
-let operand2 = 0;
+let operand1;
+let operand2;
 let operator;
 
 // operating functions
@@ -28,19 +31,33 @@ function divide(x,y) {
 
 function operate(operand1, operand2, operator){
     if (operator === '+'){
-        return add(parseInt(operand1), parseInt(operand2));
+        return add(Number(operand1), Number(operand2));
     }else if (operator === '-'){
-        return subtract(parseInt(operand1), parseInt(operand2));
+        return subtract(Number(operand1), Number(operand2));
     }else if (operator === 'x'){
-        return multiply(parseInt(operand1), parseInt(operand2));
+        return multiply(Number(operand1), Number(operand2));
     }else if (operator === '/'){
-        return divide(parseInt(operand1), parseInt(operand2));
+        return divide(Number(operand1), Number(operand2));
+    }else{
+        return null;
     }
 }
+
+function evaluate (){
+    operand2 = parseInt(displayText);
+    let result = operate(operand1, operand2, operator);
+    outputBox.textContent = result;
+    operand1 = result;
+}
+
 
 //NUMBER BUTTONS
 numberButtons.forEach(button => button.addEventListener('click', () => {
     if (displayText.length < 12){
+        if (resetNextInput){
+            displayText = '';
+            resetNextInput = false;
+        }
         // change the display text to the id of the button and display it on the output
         displayText += button.id;
         outputBox.textContent = displayText;
@@ -52,30 +69,36 @@ numberButtons.forEach(button => button.addEventListener('click', () => {
 
 //OPERATORS
 operatorButtons.forEach(button => button.addEventListener('click', () => {
-    //change operand1 to an int and set the operator
-    operand1 = parseInt(displayText);
+    //set operator
     operator = button.id;
-    displayText = '';
-    outputBox.textContent = displayText;
+    //change operand1 to an int
+    operand1 = parseInt(outputBox.textContent);
+    resetNextInput = true;
 }));
 
 //EQUALS FUNCTION
 equalsButton.addEventListener('click', () => {
-    operand2 = displayText;
-    let result = operate(operand1, operand2, operator);
-    outputBox.textContent = result;
-    operator = '';
+    if (operand1 === undefined){
+        operand1 = outputBox.textContent;
+    }else if (operator !== undefined){
+        operand2 = outputBox.textContent;
+    }
+    if (operand1 !== undefined && operand2 !== undefined){
+        evaluate();
+    }
 });
 
 //CLEAR FUNCTION
 clearButton.addEventListener('click', () => {
-    if (operator == undefined){
-        operand1 = '';
-        outputBox.textContent = '0';
-        displayText = '';
-    }else {
-        operand2 = '';
-        outputBox.textContent = '0';
-        displayText = '';
-    }
+    operand1 = undefined;
+    operand2 = undefined;
+    operator = undefined;
+    displayText = '';
+    outputBox.textContent = '';
 });
+
+function updateDebugger (){
+    debugDiv.textContent = 'Operand 1: ' + operand1 + ', Operand 2: ' + operand2 + ', Operator: '+ operator;
+}
+
+setInterval(updateDebugger, 500);
