@@ -7,6 +7,7 @@ const outputBox = document.querySelector('#output');
 const equalsButton = document.getElementById('=');
 const clearButton = document.getElementById('CLR');
 const decimalButton = document.getElementById('.');
+const deleteButton = document.getElementById('delete');
 const debugDiv = document.querySelector('.debug-div');
 
 let displayText = '';
@@ -87,8 +88,7 @@ function addDigit(button) {
 
 //NUMBER BUTTONS
 numberButtons.forEach(button => button.addEventListener('click', () => {
-    addDigit(button); 
-    console.log(typeof(button.id));
+    addDigit(button);
 }));
 
 //OPERATORS
@@ -119,7 +119,10 @@ equalsButton.addEventListener('click', () => {
     if (operand1 !== undefined && operand2 !== undefined){
         evaluate();
     }
-    equalsPressed = true;
+    if(operand1 !== undefined && operand2 !== undefined){
+        equalsPressed = true;
+    }
+    
 });
 
 //CLEAR FUNCTION
@@ -133,6 +136,22 @@ decimalButton.addEventListener('click', () => {
     if (!hasDecimal){
         addDigit(decimalButton);
     }
+});
+
+//DELETE BUTTON
+deleteButton.addEventListener('click', () => {
+    if (outputBox.textContent != 0){
+        displayText = outputBox.textContent;
+        let outputArray = displayText.split('');
+        outputArray.pop();
+        let outputText = outputArray.join('');
+        outputBox.textContent = outputText;
+    }
+    if (outputBox.textContent === ''){
+        displayText = '';
+        outputBox.textContent = displayText;
+    }
+    
 });
 
 function updateDebugger (){
