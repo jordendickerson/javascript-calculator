@@ -158,4 +158,17 @@ function updateDebugger (){
     debugDiv.textContent = 'Operand 1: ' + operand1 + ', Operand 2: ' + operand2 + ', Operator: '+ operator;
 }
 
-setInterval(updateDebugger, 500);
+function updateOperator(){
+    if (operator !== undefined){
+        operatorButtons.forEach(button => {
+            if (button.id === operator){
+                button.style.color = "white";
+            }else{
+                button.style.color = "black";
+            }
+        }); 
+    }
+    
+}
+
+setInterval(updateOperator, 50);
