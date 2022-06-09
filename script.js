@@ -65,6 +65,9 @@ function clear(){
     operator = undefined;
     displayText = '';
     outputBox.textContent = '';
+    operatorButtons.forEach(button => {
+        button.style.color = "black";
+    })
 }
 
 function addDigit(button) {
